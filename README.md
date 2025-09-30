@@ -1,32 +1,24 @@
-# Deploy to Render
+# Deploy to Vercel
 
-## One service (Node) serving API + static frontend
+This repo includes Vercel functions under `api/` that expose the API at `/api`.
 
-1. Create a new Web Service on Render
-   - Repository: this repo
-   - Root directory: /
-   - Runtime: Node
-   - Build Command: `pnpm install --frozen-lockfile && pnpm build`
-   - Start Command: `pnpm start`
+1. Import repo into Vercel
+2. Framework: Vite
+3. Build Command: `pnpm install --frozen-lockfile && pnpm build`
+4. Output Directory: `dist`
+5. No custom rewrites needed; Vercel functions deploy at `/api/*`
 
-2. Environment
-   - Set `NODE_VERSION` to 20
-   - Optionally set `VITE_API_BASE` if using an external API
+Environment (optional)
+- `VITE_API_BASE`: override API base (by default `/api`)
 
-3. Notes
-   - The server serves built files from `dist` and exposes API under `/api`.
-   - SPA fallback is enabled.
+Local dev
+- `pnpm dev` still proxies `/api` to the local Express server; to test Vercel functions locally, use `vercel dev` instead.
 
-## Alternative: two services
+---
 
-- Static Site (Vite build output)
-  - Build Command: `pnpm install --frozen-lockfile && pnpm build:web`
-  - Publish Directory: `dist`
-  - Add a rewrite rule `/* -> /index.html`
+# Deploy to Render (optional alternative)
 
-- Web Service for API
-  - Start Command: `pnpm dev:api`
-  - Set `CORS` allowed origins accordingly
+See previous section if you prefer a single Node service serving both API and static assets.
 
 # vue-task-manager
 
