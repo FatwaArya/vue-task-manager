@@ -1,3 +1,33 @@
+# Deploy to Render
+
+## One service (Node) serving API + static frontend
+
+1. Create a new Web Service on Render
+   - Repository: this repo
+   - Root directory: /
+   - Runtime: Node
+   - Build Command: `pnpm install --frozen-lockfile && pnpm build`
+   - Start Command: `pnpm start`
+
+2. Environment
+   - Set `NODE_VERSION` to 20
+   - Optionally set `VITE_API_BASE` if using an external API
+
+3. Notes
+   - The server serves built files from `dist` and exposes API under `/api`.
+   - SPA fallback is enabled.
+
+## Alternative: two services
+
+- Static Site (Vite build output)
+  - Build Command: `pnpm install --frozen-lockfile && pnpm build:web`
+  - Publish Directory: `dist`
+  - Add a rewrite rule `/* -> /index.html`
+
+- Web Service for API
+  - Start Command: `pnpm dev:api`
+  - Set `CORS` allowed origins accordingly
+
 # vue-task-manager
 
 This template should help get you started developing with Vue 3 in Vite.

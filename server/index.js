@@ -1,5 +1,7 @@
 import express from 'express'
 import cors from 'cors'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const app = express()
 app.use(cors())
@@ -78,8 +80,8 @@ function requireAuth(req, res, next) {
     next()
 }
 
-// Routes
-app.post('/login', (req, res) => {
+// Routes (prefix with /api)
+app.post('/api/login', (req, res) => {
     const { email, password } = req.body || {}
     if (!email || !password) {
         return res.json({ message: 'Email and password are required' })
@@ -88,14 +90,14 @@ app.post('/login', (req, res) => {
     return res.status(200).json({ token: 'mock-token-123', user: { id: 1, email } })
 })
 
-app.get('/tasks', requireAuth, (req, res) => {
+app.get('/api/tasks', requireAuth, (req, res) => {
     const filtered = applyFilters(tasks, req.query)
     const sorted = applySort(filtered, req.query)
     const { items, meta } = applyPagination(sorted, req.query)
     return res.status(200).json({ data: items, meta })
 })
 
-app.post('/tasks', requireAuth, (req, res) => {
+app.post('/api/tasks', requireAuth, (req, res) => {
     const { title, description = '', status = 'todo', dueDate = null, priority = 'medium' } = req.body || {}
     if (!title) return res.status(400).json({ message: 'Title is required' })
     const now = new Date().toISOString()
@@ -104,7 +106,7 @@ app.post('/tasks', requireAuth, (req, res) => {
     return res.status(201).json({ data: task })
 })
 
-app.put('/tasks/:id', requireAuth, (req, res) => {
+app.put('/api/tasks/:id', requireAuth, (req, res) => {
     const id = String(req.params.id)
     const idx = tasks.findIndex((t) => t.id === id)
     if (idx === -1) return res.status(404).json({ message: 'Task not found' })
@@ -113,7 +115,7 @@ app.put('/tasks/:id', requireAuth, (req, res) => {
     return res.status(200).json({ data: tasks[idx] })
 })
 
-app.delete('/tasks/:id', requireAuth, (req, res) => {
+app.delete('/api/tasks/:id', requireAuth, (req, res) => {
     const id = String(req.params.id)
     const idx = tasks.findIndex((t) => t.id === id)
     if (idx === -1) return res.status(404).json({ message: 'Task not found' })
@@ -121,10 +123,24 @@ app.delete('/tasks/:id', requireAuth, (req, res) => {
     return res.status(200).json({ data: removed })
 })
 
+// Static serving for production
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const rootDir = path.resolve(__dirname, '..')
+const distPath = path.join(rootDir, 'dist')
+
+app.use(express.static(distPath))
+
+// SPA fallback (after API routes)
+app.get('*', (req, res) => {
+    // Do not hijack API calls
+    if (req.path.startsWith('/api')) return res.status(404).json({ message: 'Not found' })
+    return res.sendFile(path.join(distPath, 'index.html'))
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     seedTasks()
-    console.log(`Mock API listening on http://localhost:${PORT}`)
+    console.log(`Server running on http://localhost:${PORT}`)
 })
 
 
