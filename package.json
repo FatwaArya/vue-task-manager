@@ -7,13 +7,10 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "run-p dev:api dev:web",
-    "dev:web": "vite",
-    "dev:api": "node server/index.js",
+    "dev": "vite",
     "build": "run-s type-check build:web",
     "build:web": "vite build",
     "preview": "vite preview",
-    "start": "node server/index.js",
     "type-check": "vue-tsc --build",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
