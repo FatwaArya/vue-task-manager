@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
-  const isDev = command === 'serve'
+
 
   return {
     plugins: [
@@ -19,7 +19,7 @@ export default defineConfig(({ command }) => {
     server: {
       proxy: {
         '/api': {
-          target: isDev ? 'http://localhost:3001' : process.env.VITE_API_URL,
+          target: 'https://express-jade-delta.vercel.app',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
