@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "https://express-jade-delta.vercel.app/$1"
+        }
+    ]
+}

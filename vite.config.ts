@@ -19,7 +19,7 @@ export default defineConfig(({ command }) => {
     server: {
       proxy: {
         '/api': {
-          target: import.meta.env.VITE_API_BASE,
+          target: 'https://express-jade-delta.vercel.app',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
