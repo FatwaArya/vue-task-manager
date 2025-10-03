@@ -16,15 +16,15 @@ export default defineConfig(({ command }) => {
       vueDevTools(),
       tailwindcss(),
     ],
-    server: isDev ? {
+    server: {
       proxy: {
         '/api': {
-          target: process.env.VITE_API_URL || 'http://localhost:3001',
+          target: isDev ? 'http://localhost:3001' : process.env.VITE_API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
-    } : undefined,
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
