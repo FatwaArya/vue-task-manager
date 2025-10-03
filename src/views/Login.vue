@@ -25,7 +25,8 @@ async function onSubmit() {
   loading.value = true
   try {
     const res = await axios.post('/api/login', { email: email.value, password: password.value })
-    auth.setSession(res.data.token, res.data.user)
+    console.log(res.data)
+    auth.setSession(res.data.data.token, res.data.data.user)
     toast.add({ severity: 'success', summary: 'Logged in', life: 1500 })
     const redirect = (route.query.redirect as string) || '/tasks'
     router.replace(redirect)
